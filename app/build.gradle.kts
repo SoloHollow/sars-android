@@ -60,4 +60,10 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    //navigation dependency
+
+        val nav_version = "2.9.1"
+        implementation("androidx.navigation:navigation-compose:$nav_version")
+
 }
