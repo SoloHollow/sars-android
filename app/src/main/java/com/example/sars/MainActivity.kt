@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
@@ -66,7 +65,6 @@ fun MainScreen() {
         }
     }
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar() {
@@ -76,7 +74,7 @@ fun AppTopBar() {
         ),
         title = {
             Text(
-                text = "Tournament Tracker",
+                text = "Pawnder",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White
@@ -95,7 +93,6 @@ fun AppTopBar() {
         }
     )
 }
-
 @Composable
 fun AppBottomBar() {
     NavigationBar(
@@ -108,7 +105,6 @@ fun AppBottomBar() {
             label = { Text("Home") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = false,
             onClick = { Log.i("BottomNav", "Filter 2 clicked") },
@@ -116,7 +112,6 @@ fun AppBottomBar() {
             label = { Text("Filter 2") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = false,
             onClick = { Log.i("BottomNav", "Add clicked") },
@@ -133,7 +128,6 @@ fun AppBottomBar() {
             label = { Text("Add") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = false,
             onClick = { Log.i("BottomNav", "Filter 4 clicked") },
@@ -141,7 +135,6 @@ fun AppBottomBar() {
             label = { Text("Filter 4") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = false,
             onClick = { Log.i("BottomNav", "Filter 5 clicked") },
@@ -151,7 +144,6 @@ fun AppBottomBar() {
         )
     }
 }
-
 @Composable
 fun navItemColors() = NavigationBarItemDefaults.colors(
     selectedIconColor = Color.Black,
@@ -160,7 +152,6 @@ fun navItemColors() = NavigationBarItemDefaults.colors(
     unselectedTextColor = Color.Black,
     indicatorColor = MaterialTheme.colorScheme.primary
 )
-
 @Preview(showBackground = true)
 @Composable
 fun PreviewMainScreen() {
