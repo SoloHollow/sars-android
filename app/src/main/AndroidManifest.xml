@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SARS">
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.sars.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.SARS">
