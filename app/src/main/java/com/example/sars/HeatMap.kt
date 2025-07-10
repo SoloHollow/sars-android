@@ -11,16 +11,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
 import com.google.maps.android.compose.*
 import com.google.android.gms.maps.model.*
 
 @Composable
-fun HeatMap() {
+fun HeatMap(navController: NavController) {
     val selectedIndex = remember { mutableIntStateOf(0) }
+    var showCamera by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = { AppTopBar() },
-        bottomBar = { AppBottomBar(selectedIndex) }
+        bottomBar = { AppBottomBar(navController,selectedIndex, onAddClick = { showCamera = true }) }
     ) { innerPadding ->
         Column(
             modifier = Modifier

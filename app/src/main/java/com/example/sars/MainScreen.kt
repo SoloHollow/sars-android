@@ -122,8 +122,8 @@ fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>, 
         )
         NavigationBarItem(
             selected = selectedIndex.value == 3,
-            onClick = { selectedIndex.value = 3 },
-            icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 4") },
+            onClick = { navController.navigate("HeatMap") },
+            icon = { Icon(Icons.Filled.Filter, contentDescription = "Heatmap") },
             label = { Text("Filter 4") },
             colors = navItemColors()
         )
@@ -201,17 +201,6 @@ fun MainScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    Button(onClick = { Log.i("MainScreen", "Click Me 1 clicked") }) {
-                        Text("Click Me 1")
-                    }
-                    Button(onClick = { Log.i("MainScreen", "Click Me 2 clicked") }) {
-                        Text("Click Me 2")
-                    }
-                }
             }
         }
     }

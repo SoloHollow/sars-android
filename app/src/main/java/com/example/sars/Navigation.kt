@@ -56,5 +56,9 @@ fun navGraphBuilder(navController: NavController):NavGraph
         {
             RegisterScreen(navController)
         }
+        composable("HeatMap")
+        {
+            HeatMap(navController)
+        }
     }
 }

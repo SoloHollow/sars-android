@@ -79,6 +79,7 @@ fun RegisterScreen(navController: NavController) {
                         value = fullName,
                         onValueChange = { fullName = it },
                         label = { Text("Full Name") },
+                        singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -87,6 +88,7 @@ fun RegisterScreen(navController: NavController) {
                         onValueChange = { email = it },
                         label = { Text("Email") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                        singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(8.dp))

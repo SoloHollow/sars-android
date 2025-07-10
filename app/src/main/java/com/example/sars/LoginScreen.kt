@@ -39,7 +39,7 @@ import com.example.jetbrainscomponents.R
 fun LoginScreen(navController: NavController) {
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
-    var showPassword by remember { mutableStateOf(false) }
+    var showPassword by remember { mutableStateOf(true) }
 
     Scaffold {
         innerPadding ->
@@ -106,7 +106,7 @@ fun LoginScreen(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
-                        onClick = { navController.navigate("Main-Screen")},
+                        onClick = { navController.navigate("HeatMap")},
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
