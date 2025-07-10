@@ -1,17 +1,9 @@
 package com.example.sars
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,36 +26,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.jetbrainscomponents.ui.theme.JetbrainsComponentsTheme
 
-
-
-/*
-@Composable
-fun AdoptionScreen(navController: NavController) {
-    // Selected index state for bottom navigation
-    val selectedIndex = remember { mutableIntStateOf(0) }
-    val navController = rememberNavController()
-
-    Scaffold(
-        topBar = {},
-        bottomBar = { AppBottomBar(navController,selectedIndex) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {}
-        }
-    }    var showCamera by remember { mutableStateOf(false) }
-
-}
-*/
 
 @Composable
 fun AdoptionScreen(navController: NavController) {

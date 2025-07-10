@@ -1,5 +1,6 @@
 package com.example.sars
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import android.Manifest
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Filter
@@ -53,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.jetbrainscomponents.ui.theme.JetbrainsComponentsTheme
-import androidx.navigation.compose.rememberNavController as rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,70 +82,6 @@ fun AppTopBar() {
         }
     )
 }
-
-/*@Composable
-fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
-        NavigationBarItem(
-            selected = selectedIndex.value == 0,
-            onClick = { navController.navigate("Main-Screen") },
-            icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
-            label = { Text("Home") },
-            colors = navItemColors()
-        )
-
-        NavigationBarItem(
-            selected = selectedIndex.value == 1,
-            onClick = {navController.navigate("Adoption-Screen")},
-            icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 2") },
-            label = { Text("Filter 2") },
-            colors = navItemColors()
-        )
-
-        NavigationBarItem(
-            selected = selectedIndex.value == 2,
-            onClick = {
-                selectedIndex.value = 2
-                Log.i("BottomNav", "Add clicked")
-            },
-            icon = {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .background(Color(0xFF7A7CAB), shape = CircleShape),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add", tint = Color.Black)
-                }
-            },
-            label = { Text("Add") },
-            colors = navItemColors()
-        )
-
-        NavigationBarItem(
-            selected = selectedIndex.value == 3,
-            onClick = {
-                selectedIndex.value = 3
-                Log.i("BottomNav", "Filter 4 clicked")
-            },
-            icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 4") },
-            label = { Text("Filter 4") },
-            colors = navItemColors()
-        )
-
-        NavigationBarItem(
-            selected = selectedIndex.value == 4,
-            onClick = {
-                selectedIndex.value = 4
-                Log.i("BottomNav", "Filter 5 clicked")
-            },
-            icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 5") },
-            label = { Text("Filter 5") },
-            colors = navItemColors()
-        )
-    }
-}
-*/
 
 @Composable
 fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>, onAddClick: () -> Unit) {
@@ -211,28 +146,6 @@ fun navItemColors() = NavigationBarItemDefaults.colors(
     indicatorColor = MaterialTheme.colorScheme.primary
 )
 
-/*@Composable
-fun MainScreen(navController: NavController) {
-
-
-    Scaffold(
-        topBar = { AppTopBar() },
-        bottomBar = { AppBottomBar(navController, selectedIndex) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Your content here
-        }
-    }
-}
-
- */
 
 @Composable
 fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
