@@ -48,6 +48,7 @@ dependencies {
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.navigation.runtime.android)
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     testImplementation("junit:junit:4.13.2")
@@ -56,7 +57,29 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     //navigation dependency
-    val nav_version = "2.9.1"
+    val nav_version = "2.7.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    ///// LIFECYCLE /////
+    val lifecycle_version = "2.7.0" // or latest
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${lifecycle_version}")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:${lifecycle_version}")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle_version}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:${lifecycle_version}")
+//// CAMERA STUFF ////
+    val camerax_version = "1.3.0" // or latest stable
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+
+    // build.gradle (app)
+    implementation("androidx.camera:camera-camera2:1.3.0")
+    implementation("androidx.camera:camera-lifecycle:1.3.0")
+    implementation("androidx.camera:camera-view:1.3.0")
+    implementation("androidx.camera:camera-extensions:1.3.0")
+    implementation("androidx.camera:camera-core:1.3.0")
+    implementation("androidx.camera:camera-view:1.3.0")
+
 
 }

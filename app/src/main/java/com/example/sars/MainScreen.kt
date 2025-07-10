@@ -1,6 +1,10 @@
 package com.example.sars
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,15 +35,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
+import com.example.jetbrainscomponents.ui.theme.JetbrainsComponentsTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,35 +84,28 @@ fun AppTopBar() {
 }
 
 @Composable
-fun AppBottomBar(selectedIndex: MutableState<Int>) {
+fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>, onAddClick: () -> Unit) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
         NavigationBarItem(
             selected = selectedIndex.value == 0,
-            onClick = {
-                selectedIndex.value = 0
-                Log.i("BottomNav", "Home clicked")
-            },
+            onClick = { navController.navigate("Main-Screen")},
             icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
             label = { Text("Home") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = selectedIndex.value == 1,
-            onClick = {
-                selectedIndex.value = 1
-                Log.i("BottomNav", "Filter 2 clicked")
-            },
+            onClick = { navController.navigate("Adoption-Screen")},
             icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 2") },
             label = { Text("Filter 2") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = selectedIndex.value == 2,
             onClick = {
                 selectedIndex.value = 2
                 Log.i("BottomNav", "Add clicked")
+                onAddClick()
             },
             icon = {
                 Box(
@@ -114,24 +120,16 @@ fun AppBottomBar(selectedIndex: MutableState<Int>) {
             label = { Text("Add") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = selectedIndex.value == 3,
-            onClick = {
-                selectedIndex.value = 3
-                Log.i("BottomNav", "Filter 4 clicked")
-            },
+            onClick = { selectedIndex.value = 3 },
             icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 4") },
             label = { Text("Filter 4") },
             colors = navItemColors()
         )
-
         NavigationBarItem(
             selected = selectedIndex.value == 4,
-            onClick = {
-                selectedIndex.value = 4
-                Log.i("BottomNav", "Filter 5 clicked")
-            },
+            onClick = { selectedIndex.value = 4 },
             icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 5") },
             label = { Text("Filter 5") },
             colors = navItemColors()
@@ -148,38 +146,80 @@ fun navItemColors() = NavigationBarItemDefaults.colors(
     indicatorColor = MaterialTheme.colorScheme.primary
 )
 
-@Composable
-fun MainScreen() {
-    // Selected index state for bottom navigation
-    val selectedIndex = remember { mutableIntStateOf(0) }
 
-    Scaffold(
-        topBar = { AppTopBar() },
-        bottomBar = { AppBottomBar(selectedIndex) }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+@Composable
+fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
+    val context = LocalContext.current
+    val permissionGranted = ContextCompat.checkSelfPermission(
+        context, Manifest.permission.CAMERA
+    ) == PackageManager.PERMISSION_GRANTED
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) onPermissionGranted()
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        if (permissionGranted) {
+            onPermissionGranted()
+        } else {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+}
+
+@Composable
+fun MainScreen(navController: NavController) {
+    val selectedIndex = remember { mutableIntStateOf(0) }
+    var permissionGranted by remember { mutableStateOf(false) }
+    var showCamera by remember { mutableStateOf(false) }
+
+    if (!permissionGranted) {
+        RequestCameraPermission {
+            permissionGranted = true
+        }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+            Text("Requesting Camera Permission...")
+        }
+    } else if (showCamera) {
+        CameraScreen(navController,onClose = { showCamera = false })
+    } else {
+        Scaffold(
+            topBar = { AppTopBar() },
+            bottomBar = { AppBottomBar( navController ,selectedIndex, onAddClick = { showCamera = true }) }
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Button(onClick = {
-                    Log.i("com.example.sars.MainScreen", "Click Me 1 clicked")
-                }) {
-                    Text("Click Me 1")
-                }
-                Button(onClick = {
-                    Log.i("com.example.sars.MainScreen", "Click Me 2 clicked")
-                }) {
-                    Text("Click Me 2")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    Button(onClick = { Log.i("MainScreen", "Click Me 1 clicked") }) {
+                        Text("Click Me 1")
+                    }
+                    Button(onClick = { Log.i("MainScreen", "Click Me 2 clicked") }) {
+                        Text("Click Me 2")
+                    }
                 }
             }
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun PreviewScreen() {
+    JetbrainsComponentsTheme {
+        Navigation()
     }
 }
