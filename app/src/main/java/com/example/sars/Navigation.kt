@@ -2,6 +2,10 @@ package com.example.sars
 
 import android.util.Log
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.NavGraphBuilder
@@ -32,8 +36,10 @@ fun Navigation() {   //navController
 
 fun navGraphBuilder(navController: NavController):NavGraph
 {
+
     return navController.createGraph(startDestination = "Main-Screen")
     {
+
         composable("Main-Screen")
         {
             MainScreen(navController)
@@ -46,7 +52,7 @@ fun navGraphBuilder(navController: NavController):NavGraph
 
         composable("Plus-Screen")
         {
-            PlusScreen(navController)
+            CameraScreen (navController,onClose = { var showCamera = false })
         }
     }
 }

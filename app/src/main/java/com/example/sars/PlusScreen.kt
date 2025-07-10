@@ -26,31 +26,20 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.camera.core.ImageCapture.OnImageCapturedCallback
 import androidx.camera.core.ImageProxy
+import androidx.navigation.NavController
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-<<<<<<< HEAD:app/src/main/java/com/example/sars/PlusScreen.kt
-fun PlusScreen(navController: NavController) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Plus screen content goes here")
-        Button(onClick = {
-            navController.popBackStack() // Go back to previous screen
-        }) {
-            Text(text = "Go Back")
-=======
-fun CameraScreen(onClose: () -> Unit) {
+
+fun CameraScreen(navController: NavController, onClose: () -> Unit) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val cameraController = remember {
         LifecycleCameraController(context).apply {
             setCameraSelector(CameraSelector.DEFAULT_BACK_CAMERA)
->>>>>>> 88108c3f8950c2fd268b613745f35865662bd35e:app/src/main/java/com/example/sars/plusScreen.kt
+
         }
     }
 

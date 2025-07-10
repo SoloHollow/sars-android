@@ -60,20 +60,22 @@ fun AdoptionScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {}
         }
-    }
+    }    var showCamera by remember { mutableStateOf(false) }
+
 }
 */
 
 @Composable
 fun AdoptionScreen(navController: NavController) {
     val selectedIndex = remember { mutableIntStateOf(1) }
+    var showCamera by remember { mutableStateOf(false) }
 
     val pets = remember { listOf("CAT", "DOG", "3") }
     var currentIndex by remember { mutableStateOf(0) } // Correct delegation
 
 
     Scaffold(
-        bottomBar = { AppBottomBar(navController, selectedIndex) }
+        bottomBar = { AppBottomBar(navController,selectedIndex, onAddClick = { showCamera = true }) }
 
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
