@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JetbrainsComponentsTheme {
-                MainScreen()
+                LoginScreen()
             }
         }
     }
@@ -23,6 +23,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun PreviewMainScreen() {
     JetbrainsComponentsTheme {
-        MainScreen()
+        LoginScreen()
     }
 }
