@@ -48,6 +48,7 @@ dependencies {
     implementation("androidx.activity:activity-compose")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.navigation.runtime.android)
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     testImplementation("junit:junit:4.13.2")
@@ -56,7 +57,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     //navigation dependency
-    val nav_version = "2.9.1"
+    val nav_version = "2.7.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
 }

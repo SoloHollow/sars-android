@@ -38,8 +38,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.jetbrainscomponents.ui.theme.JetbrainsComponentsTheme
+import androidx.navigation.compose.rememberNavController as rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,14 +75,11 @@ fun AppTopBar() {
 }
 
 @Composable
-fun AppBottomBar(selectedIndex: MutableState<Int>) {
+fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.primary) {
         NavigationBarItem(
             selected = selectedIndex.value == 0,
-            onClick = {
-                selectedIndex.value = 0
-                Log.i("BottomNav", "Home clicked")
-            },
+            onClick = { navController.navigate("Main-Screen") },
             icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
             label = { Text("Home") },
             colors = navItemColors()
@@ -86,10 +87,7 @@ fun AppBottomBar(selectedIndex: MutableState<Int>) {
 
         NavigationBarItem(
             selected = selectedIndex.value == 1,
-            onClick = {
-                selectedIndex.value = 1
-                Log.i("BottomNav", "Filter 2 clicked")
-            },
+            onClick = {navController.navigate("Adoption-Screen")},
             icon = { Icon(Icons.Filled.Filter, contentDescription = "Filter 2") },
             label = { Text("Filter 2") },
             colors = navItemColors()
@@ -149,13 +147,12 @@ fun navItemColors() = NavigationBarItemDefaults.colors(
 )
 
 @Composable
-fun MainScreen() {
-    // Selected index state for bottom navigation
+fun MainScreen(navController: NavController) {
     val selectedIndex = remember { mutableIntStateOf(0) }
 
     Scaffold(
         topBar = { AppTopBar() },
-        bottomBar = { AppBottomBar(selectedIndex) }
+        bottomBar = { AppBottomBar(navController, selectedIndex) }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -165,21 +162,14 @@ fun MainScreen() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                Button(onClick = {
-                    Log.i("com.example.sars.MainScreen", "Click Me 1 clicked")
-                }) {
-                    Text("Click Me 1")
-                }
-                Button(onClick = {
-                    Log.i("com.example.sars.MainScreen", "Click Me 2 clicked")
-                }) {
-                    Text("Click Me 2")
-                }
-            }
+            // Your content here
         }
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun PreviewScreen() {
+    JetbrainsComponentsTheme {
+        Navigation()
     }
 }
