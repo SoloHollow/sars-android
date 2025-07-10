@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -16,6 +17,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["MAPS_API_KEY"] =
+            project.findProperty("MAPS_API_KEY") as String? ?: ""
     }
 
     buildTypes {
@@ -59,6 +62,8 @@ dependencies {
     //navigation dependency
     val nav_version = "2.7.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("com.google.maps.android:maps-compose:4.2.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
     ///// LIFECYCLE /////
     val lifecycle_version = "2.7.0" // or latest
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}")
@@ -81,5 +86,14 @@ dependencies {
     implementation("androidx.camera:camera-core:1.3.0")
     implementation("androidx.camera:camera-view:1.3.0")
 
+}
 
+secrets {
+    // Optionally specify a different file name containing your secrets.
+    // The plugin defaults to "local.properties"
+    propertiesFileName = "secrets.properties"
+
+    // A properties file containing default secret values. This file can be
+    // checked in version control.
+    defaultPropertiesFileName = "local.defaults.properties"
 }
