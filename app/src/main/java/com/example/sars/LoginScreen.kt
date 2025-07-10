@@ -32,10 +32,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.jetbrainscomponents.R
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navController: NavController) {
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
     var showPassword by remember { mutableStateOf(false) }
@@ -105,7 +106,7 @@ fun LoginScreen() {
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
-                        onClick = { /* Handle login logic here */ },
+                        onClick = { navController.navigate("Main-Screen")},
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
@@ -114,7 +115,7 @@ fun LoginScreen() {
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = {  },
+                        onClick = {navController.navigate("Register-Screen")},
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(

@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             JetbrainsComponentsTheme {
-                LoginScreen()
+                Navigation()
             }
         }
     }
@@ -26,6 +26,6 @@ class MainActivity : ComponentActivity() {
 fun PreviewMainScreen() {
     val navController = rememberNavController()
     JetbrainsComponentsTheme {
-        LoginScreen()
+        LoginScreen(navController)
     }
 }
