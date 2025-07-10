@@ -32,10 +32,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.jetbrainscomponents.R
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavController) {
     Scaffold {
         innerPadding ->
         Column(
@@ -119,7 +120,7 @@ fun RegisterScreen() {
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { /* TODO: Handle registration */ }, modifier = Modifier.fillMaxWidth()) { Text("Register") }
+                    Button(onClick = { navController.navigate("Login-Screen") }, modifier = Modifier.fillMaxWidth()) { Text("Register") }
                 }
             }
         }
