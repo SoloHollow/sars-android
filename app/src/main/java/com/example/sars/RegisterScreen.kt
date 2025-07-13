@@ -13,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -24,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -37,7 +40,9 @@ import com.example.jetbrainscomponents.R
 
 @Composable
 fun RegisterScreen(navController: NavController) {
-    Scaffold {
+    Scaffold(
+        containerColor = MaterialTheme.colorScheme.background
+    ) {
         innerPadding ->
         Column(
             modifier = Modifier
@@ -48,15 +53,17 @@ fun RegisterScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.ic_paw),
                 contentDescription = "User Registration",
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(100.dp),
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Create Account",
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -80,7 +87,9 @@ fun RegisterScreen(navController: NavController) {
                         onValueChange = { fullName = it },
                         label = { Text("Full Name") },
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary)
+
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -89,7 +98,9 @@ fun RegisterScreen(navController: NavController) {
                         label = { Text("Email") },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary)
+
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -98,8 +109,9 @@ fun RegisterScreen(navController: NavController) {
                         label = { Text("Password") },
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
                         trailingIcon = {
-                            val image = if (passwordVisible) R.drawable.ic_launcher_foreground else R.drawable.ic_launcher_foreground
+                            val image = if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                                 Icon(painter = painterResource(id = image), "toggle password visibility")
                             }
@@ -113,8 +125,9 @@ fun RegisterScreen(navController: NavController) {
                         label = { Text("Confirm Password") },
                         visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
                         trailingIcon = {
-                            val image = if (passwordVisible) R.drawable.ic_launcher_foreground else R.drawable.ic_launcher_foreground
+                            val image = if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
                             IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                                 Icon(painter = painterResource(id = image), "toggle confirm password visibility")
                             }
