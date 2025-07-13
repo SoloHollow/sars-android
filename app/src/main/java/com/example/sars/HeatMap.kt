@@ -12,6 +12,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
+import com.example.sars.sampledata.AppBottomBar
+import com.example.sars.sampledata.AppTopBar
 import com.google.maps.android.compose.*
 import com.google.android.gms.maps.model.*
 
