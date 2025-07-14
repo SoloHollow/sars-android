@@ -24,7 +24,11 @@ fun HeatMap(navController: NavController) {
 
     Scaffold(
         topBar = { AppTopBar() },
-        bottomBar = { AppBottomBar(navController,selectedIndex, onAddClick = { showCamera = true }) }
+        bottomBar = { AppBottomBar(navController,selectedIndex, onAddClick = { showCamera = true }) },
+
+        floatingActionButton = {
+            FloatingActionButtonWithNav(navController)
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier

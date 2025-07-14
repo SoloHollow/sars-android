@@ -72,8 +72,10 @@ fun MainScreen(navController: NavController) {
         CameraScreen(navController,onClose = { showCamera = false })
     } else {
         Scaffold(
+
             topBar = { AppTopBar() },
             bottomBar = { AppBottomBar( navController ,selectedIndex, onAddClick = { showCamera = true }) }
+
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -92,5 +94,7 @@ fun MainScreen(navController: NavController) {
 fun PreviewScreen() {
     JetbrainsComponentsTheme {
         Navigation()
+
+
     }
 }
