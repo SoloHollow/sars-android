@@ -19,7 +19,7 @@ fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>, 
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         NavigationBarItem(
             selected = selectedIndex.value == 0,
-            onClick = { navController.navigate("Main-Screen")},
+            onClick = { navController.navigate("HeatMap")},
             icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
             label = { Text("Home") },
             colors = navItemColors()

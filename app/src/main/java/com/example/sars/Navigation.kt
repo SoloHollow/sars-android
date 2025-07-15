@@ -2,7 +2,6 @@ package com.example.sars
 
 import android.util.Log
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph
 import androidx.navigation.compose.NavHost
@@ -35,10 +34,10 @@ fun navGraphBuilder(navController: NavController):NavGraph
     return navController.createGraph(startDestination = "Login-Screen")
     {
 
-        composable("Main-Screen")
+        /*composable("Heat-Map")
         {
-            MainScreen(navController)
-        }
+            HeatMap(navController)
+        }*/
 
         composable("Adoption-Screen")
         {
