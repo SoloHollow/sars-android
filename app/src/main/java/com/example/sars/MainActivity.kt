@@ -28,4 +28,5 @@ fun PreviewMainScreen() {
     JetbrainsComponentsTheme {
         LoginScreen(navController)
     }
+
 }

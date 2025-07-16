@@ -52,7 +52,7 @@ fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
     }
 }
 
-@Composable
+/*@Composable
 fun MainScreen(navController: NavController) {
     val selectedIndex = remember { mutableIntStateOf(0) }
     var permissionGranted by remember { mutableStateOf(false) }
@@ -72,8 +72,10 @@ fun MainScreen(navController: NavController) {
         CameraScreen(navController,onClose = { showCamera = false })
     } else {
         Scaffold(
+
             topBar = { AppTopBar() },
             bottomBar = { AppBottomBar( navController ,selectedIndex, onAddClick = { showCamera = true }) }
+
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -86,11 +88,13 @@ fun MainScreen(navController: NavController) {
             }
         }
     }
-}
+}*/
 @Preview(showBackground = true)
 @Composable
 fun PreviewScreen() {
     JetbrainsComponentsTheme {
         Navigation()
+
+
     }
 }
