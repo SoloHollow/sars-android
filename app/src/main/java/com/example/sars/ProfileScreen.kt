@@ -46,15 +46,10 @@ fun ProfileScreen(navController: NavController) {
     val email = "johndoe@email.com" // Replace with db thing
     val bio = "Pet Lover" // Replace with db thing
 
-    Scaffold(
-        topBar = { AppTopBar(title = username) },
-        bottomBar = {
-            AppBottomBar(
-                navController,
-                selectedIndex,
-                onAddClick = { showCamera = true })
-        }
-    ) { padding ->
+    Scaffold(topBar = { AppTopBar(title = username) }, bottomBar = {
+        AppBottomBar(
+            navController, selectedIndex, onAddClick = { showCamera = true })
+    }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -95,13 +90,10 @@ fun ProfileScreen(navController: NavController) {
 
 @Composable
 fun ProfileButton(
-    text: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    onClick: () -> Unit
+    text: String, icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit
 ) {
     Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        onClick = onClick, modifier = Modifier.fillMaxWidth()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
