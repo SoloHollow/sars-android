@@ -67,7 +67,7 @@ fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>, 
         )
         NavigationBarItem(
             selected = selectedIndex.value == 4,
-            onClick = { selectedIndex.value = 4 },
+            onClick = { navController.navigate("Profile-Screen") },
             icon = {Icon(
                 painter = painterResource(id = R.drawable.ic_acc), // Example icon, replace with your actual paw icon
                 contentDescription = "Profile"

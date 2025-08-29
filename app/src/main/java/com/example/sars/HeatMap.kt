@@ -38,7 +38,7 @@ fun HeatMap(navController: NavController) {
         CameraScreen(navController,onClose = { showCamera = false })
     } else {
         Scaffold(
-            topBar = { AppTopBar() },
+            topBar = { AppTopBar(title = "Pawnder") },
             bottomBar = {
                 AppBottomBar(
                     navController,
