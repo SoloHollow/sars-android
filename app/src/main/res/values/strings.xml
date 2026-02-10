@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SARS</string>
+    <string name="add_animal">Report Animal\n</string>
 </resources>

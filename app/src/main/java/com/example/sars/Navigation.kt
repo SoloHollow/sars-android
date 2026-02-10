@@ -9,55 +9,46 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
 
-
 @Composable
-fun Navigation() {   //navController
+fun Navigation() {
     val navController = rememberNavController()
 
-    navController.addOnDestinationChangedListener{navController,
-                                                  destination,
-                                                    arguments->
-        Log.i("NavController","Destination: ${destination.route}")
-
+    navController.addOnDestinationChangedListener { controller, destination, _ ->
+        Log.i("NavController", "Destination: ${destination.route}")
     }
 
-
-//navHost
     NavHost(navController = navController, graph = navGraphBuilder(navController))
 }
 
-//Nav graph
+fun navGraphBuilder(navController: NavController): NavGraph {
+    return navController.createGraph(startDestination = "Login-Screen") {
 
-fun navGraphBuilder(navController: NavController):NavGraph
-{
+        // Login & Register
+        composable("Login-Screen") { LoginScreen(navController) }
+        composable("Register-Screen") { RegisterScreen(navController) }
 
-    return navController.createGraph(startDestination = "Login-Screen")
-    {
+        // HeatMap screen
+        composable("HeatMap") { HeatMap(navController) }
 
-        /*composable("Heat-Map")
-        {
-            HeatMap(navController)
-        }*/
+        // Report Detail Screen
+        composable("ReportDetailScreen") { ReportDetailScreen(navController) }
 
-        composable("Adoption-Screen")
-        {
-            AdoptionScreen(navController)
+        // Camera (Plus-Screen) -> navigates to ReportDetailScreen
+        composable("Plus-Screen") {
+            CameraScreen(
+                navController = navController,
+                onClose = { navController.popBackStack() }
+            )
         }
 
-        composable("Plus-Screen")
-        {
-            CameraScreen (navController,onClose = { var showCamera = false })
+        // Adoption Screen
+        composable("Adoption-Screen") { AdoptionScreen(navController) }
+
+        //auto location
+        composable("ReportDetailScreen/{street}") { backStackEntry ->
+            val street = backStackEntry.arguments?.getString("street") ?: ""
+            ReportDetailScreen(navController, detectedStreet = street)
         }
-        composable("Login-Screen"){
-            LoginScreen(navController)
-        }
-        composable("Register-Screen")
-        {
-            RegisterScreen(navController)
-        }
-        composable("HeatMap")
-        {
-            HeatMap(navController)
-        }
+
     }
 }

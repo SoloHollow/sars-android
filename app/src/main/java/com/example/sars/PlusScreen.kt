@@ -6,44 +6,20 @@ import android.graphics.Matrix
 import android.util.Log
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageCapture.OnImageCapturedCallback
+import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Cameraswitch
-import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material.icons.filled.PhotoLibrary
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
@@ -51,22 +27,17 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun CameraScreen(navController: NavController, onClose: () -> Unit) {
     val context = LocalContext.current
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val cameraController = remember {
         LifecycleCameraController(context).apply {
             setCameraSelector(CameraSelector.DEFAULT_BACK_CAMERA)
-
         }
     }
-
-    var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
 
     Scaffold(
         topBar = {
@@ -110,28 +81,26 @@ fun CameraScreen(navController: NavController, onClose: () -> Unit) {
                 modifier = Modifier.fillMaxSize()
             )
 
-            // Bottom bar with buttons
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(32.dp)
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Gallery button (placeholder)
-                IconButton(onClick = {
-                    Log.d("CameraScreen", "Gallery button clicked")
-                }) {
-                    Icon(Icons.Default.PhotoLibrary, contentDescription = "Gallery")
-                }
-
-                // Capture button
                 IconButton(
                     onClick = {
                         takePhoto(context, cameraController) { bitmap ->
-                            Log.d("CameraScreen", "Photo taken!")
-                            capturedImage = bitmap
+                            val byteArray = bitmap.toByteArray()
+
+                            // Store image in savedStateHandle
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("capturedImage", byteArray)
+
+                            // Navigate to ReportDetailScreen
+                            navController.navigate("ReportDetailScreen")
                         }
                     },
                     modifier = Modifier.size(72.dp)
@@ -142,40 +111,10 @@ fun CameraScreen(navController: NavController, onClose: () -> Unit) {
                         modifier = Modifier.fillMaxSize()
                     )
                 }
-
-                // Flash button (static placeholder)
-                IconButton(onClick = {
-                    Log.d("CameraScreen", "Flash button clicked")
-                }) {
-                    Icon(Icons.Default.FlashOn, contentDescription = "Flash")
-                }
-            }
-
-            // Show captured image in a dialog
-            capturedImage?.let { image ->
-                AlertDialog(
-                    onDismissRequest = { capturedImage = null },
-                    confirmButton = {
-                        TextButton(onClick = { capturedImage = null }) {
-                            Text("Close")
-                        }
-                    },
-                    title = { Text("Captured Photo") },
-                    text = {
-                        Image(
-                            bitmap = image.asImageBitmap(),
-                            contentDescription = "Captured",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1f)
-                        )
-                    }
-                )
             }
         }
     }
 
-    // Bind controller to lifecycle
     LaunchedEffect(Unit) {
         cameraController.bindToLifecycle(lifecycleOwner)
     }
@@ -188,7 +127,7 @@ private fun takePhoto(
 ) {
     controller.takePicture(
         ContextCompat.getMainExecutor(context),
-        object : OnImageCapturedCallback() {
+        object : ImageCapture.OnImageCapturedCallback() {
             override fun onCaptureSuccess(image: ImageProxy) {
                 val rotationDegrees = image.imageInfo.rotationDegrees
                 val bitmap = image.toBitmap()

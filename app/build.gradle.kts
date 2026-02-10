@@ -52,6 +52,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx")
     implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.navigation.runtime.android)
+    implementation(libs.androidx.navigation.testing.android)
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     testImplementation("junit:junit:4.13.2")
@@ -60,7 +61,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     //navigation dependency
-    val nav_version = "2.7.6"
+    val nav_version = "2.7.7"
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("com.google.maps.android:maps-compose:4.2.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
@@ -85,6 +86,12 @@ dependencies {
     implementation("androidx.camera:camera-extensions:1.3.0")
     implementation("androidx.camera:camera-core:1.3.0")
     implementation("androidx.camera:camera-view:1.3.0")
+
+    //location
+    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 
 }
 
