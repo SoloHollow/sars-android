@@ -84,5 +84,6 @@ fun navGraphBuilder(navController: NavController, userType: UserType): NavGraph 
             val petName = backStackEntry.arguments?.getString("petName") ?: ""
             DetailsScreen(petName, navController)
         }
+
     }
 }
