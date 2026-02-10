@@ -1,75 +1,118 @@
 package com.example.sars
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.jetbrainscomponents.ui.theme.JetbrainsComponentsTheme
 import com.example.sars.sampledata.AppBottomBar
-
+import com.example.sars.sampledata.PetRepository
+import kotlinx.coroutines.launch
 
 @Composable
 fun AdoptionScreen(navController: NavController) {
+
     val selectedIndex = remember { mutableIntStateOf(1) }
     var showCamera by remember { mutableStateOf(false) }
 
-    val pets = remember { listOf("CAT", "DOG", "3") }
-    var currentIndex by remember { mutableStateOf(0) } // Correct delegation
-
+    val pets = PetRepository.pets
+    var index by remember { mutableStateOf(0) }
 
     Scaffold(
-        bottomBar = { AppBottomBar(navController,selectedIndex, onAddClick = { showCamera = true }) }
-
+        bottomBar = {
+            AppBottomBar(
+                navController,
+                selectedIndex,
+                onAddClick = { showCamera = true }
+            )
+        }
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
-            if (currentIndex <  pets.size) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .size(300.dp)
-                        .background(Color.LightGray, RoundedCornerShape(16.dp))
-                        .pointerInput(Unit) {
-                            detectHorizontalDragGestures { _, dragAmount ->
-                                if (dragAmount > 0) {  }
-                                else {  }
-                                currentIndex++
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+
+            // No more pets
+            if (index >= pets.size) {
+                Text("No more pets 🐾", fontSize = 22.sp)
+                return@Box
+            }
+
+            val pet = pets[index]
+
+            val offsetX = remember { Animatable(0f) }
+            val scope = rememberCoroutineScope()
+
+            Card(
+                modifier = Modifier
+                    .size(320.dp, 420.dp)
+                    .offset { IntOffset(offsetX.value.toInt(), 0) }
+                    // ⭐ rotation effect (optional but nice)
+                    .graphicsLayer {
+                        rotationZ = offsetX.value / 40f
+                    }
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDrag = { _, drag ->
+                                scope.launch {
+                                    offsetX.snapTo(offsetX.value + drag.x)
+                                }
+                            },
+                            onDragEnd = {
+                                scope.launch {
+                                    if (offsetX.value > 300 || offsetX.value < -300) {
+
+                                        // Swipe away animation
+                                        offsetX.animateTo(
+                                            if (offsetX.value > 0) 1000f else -1000f
+                                        )
+
+                                        index++
+                                        offsetX.snapTo(0f)
+
+                                    } else {
+                                        offsetX.animateTo(0f)
+                                    }
+                                }
                             }
-                        },
-                    contentAlignment = Alignment.Center
+                        )
+                    },
+                shape = RoundedCornerShape(20.dp)
+            ) {
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    Text(pets[currentIndex], fontSize = 32.sp)                }
-            } else {
-                Text("No more pets", Modifier.align(Alignment.Center))
+
+                    Text(pet.name, fontSize = 28.sp)
+                    Text(pet.breed)
+                    Text(pet.age)
+
+                    Button(
+                        onClick = {
+                            navController.navigate(
+                                "Details-Screen/${pet.name}"
+                            )
+                        }
+                    ) {
+                        Text("View Details")
+                    }
+                }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewAdoptionScreen() {
-    val navController = rememberNavController()
-    JetbrainsComponentsTheme {
-        AdoptionScreen(navController)
     }
 }
