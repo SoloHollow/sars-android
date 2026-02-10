@@ -69,6 +69,7 @@ fun navGraphBuilder(navController: NavController, userType: UserType): NavGraph 
         composable("Login-Screen") { LoginScreen(navController) }
         composable("Register-Screen") { RegisterScreen(navController) }
         composable("HeatMap") { HeatMap(navController) }
+        composable("ReportDetailScreen") { ReportDetailScreen(navController) }
         composable("Plus-Screen") { CameraScreen(navController, onClose = {}) }
 
         // 🐾 ADOPTION FLOW (Conditional)
@@ -83,6 +84,11 @@ fun navGraphBuilder(navController: NavController, userType: UserType): NavGraph 
         composable("Details-Screen/{petName}") { backStackEntry ->
             val petName = backStackEntry.arguments?.getString("petName") ?: ""
             DetailsScreen(petName, navController)
+        }
+
+        composable("ReportDetailScreen/{street}") { backStackEntry ->
+            val street = backStackEntry.arguments?.getString("street") ?: ""
+            ReportDetailScreen(navController, detectedStreet = street)
         }
 
     }
