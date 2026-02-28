@@ -29,9 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
@@ -398,18 +399,20 @@ fun ReportDetailScreen(
         Button(
             onClick = {
                 if (latitude != null && longitude != null) {
-                    submitReport(
-                        animalType = animalType,
-                        isPack = isPack,
-                        countEstimate = countEstimate.toIntOrNull() ?: 1,
-                        healthStatus = healthStatus,
-                        latitude = latitude!!,
-                        longitude = longitude!!,
-                        city = city,
-                        state = state,
-                        extraInfo = extraInfo.ifEmpty { null },
-                        contact = contact
-                    )
+                    scope.launch {
+                        submitReport(
+                            animalType = animalType,
+                            isPack = isPack,
+                            countEstimate = countEstimate.toIntOrNull() ?: 1,
+                            healthStatus = healthStatus,
+                            latitude = latitude!!,
+                            longitude = longitude!!,
+                            city = city,
+                            state = state,
+                            extraInfo = extraInfo.ifEmpty { null },
+                            contact = contact
+                        )
+                    }
                 } else {
                     Log.e("ReportSubmit", "Location not detected")
                 }
@@ -473,7 +476,7 @@ private fun FormField(
     }
 }
 
-private fun submitReport(
+private suspend fun submitReport(
     animalType: AnimalType,
     isPack: Boolean,
     countEstimate: Int,
@@ -498,11 +501,19 @@ private fun submitReport(
         extraInfo = extraInfo
     )
 
-    // Save to shared in-memory store so HeatMap can display it
+    // 1. Add locally immediately so the heatmap updates without waiting for the server
     ReportStore.addReport(report)
+    Log.d("ReportSubmit", "Report added locally: $report")
 
-    Log.d("ReportSubmit", "Report saved: $report")
-
-    // TODO: also POST to your backend API here
-    // apiService.submitReport(report)
+    // 2. Also POST to backend; if it succeeds, replace the local copy with the server version
+    ApiService.submitReport(report)
+        .onSuccess { saved ->
+            // Server may have assigned a real UUID – update the store
+            ReportStore.reports.remove(report)
+            ReportStore.addReport(saved)
+            Log.d("ReportSubmit", "Report saved on server: $saved")
+        }
+        .onFailure { err ->
+            Log.e("ReportSubmit", "Server submit failed (kept locally): ${err.message}")
+        }
 }
