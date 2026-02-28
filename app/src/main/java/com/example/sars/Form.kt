@@ -485,32 +485,24 @@ private fun submitReport(
     extraInfo: String?,
     contact: String
 ) {
-    // TODO: Replace with actual API call to your backend
-    Log.d("ReportSubmit", """
-        Animal Type: $animalType
-        Is Pack: $isPack
-        Count: $countEstimate
-        Health: $healthStatus
-        Latitude: $latitude
-        Longitude: $longitude
-        City: $city
-        State: $state
-        Extra Info: $extraInfo
-        Contact: $contact
-    """.trimIndent())
+    val report = AnimalReport(
+        reportedBy = java.util.UUID.randomUUID(), // Replace with real user UUID from auth
+        latitude = latitude,
+        longitude = longitude,
+        city = city,
+        state = state,
+        animalType = animalType,
+        isPack = isPack,
+        countEstimate = countEstimate,
+        healthStatus = healthStatus,
+        extraInfo = extraInfo
+    )
 
-    // Example: Send to backend
-    // val report = AnimalReport(
-    //     reportedBy = currentUserId, // Get from your auth
-    //     latitude = latitude,
-    //     longitude = longitude,
-    //     city = city,
-    //     state = state,
-    //     animalType = animalType,
-    //     isPack = isPack,
-    //     countEstimate = countEstimate,
-    //     healthStatus = healthStatus,
-    //     extraInfo = extraInfo
-    // )
+    // Save to shared in-memory store so HeatMap can display it
+    ReportStore.addReport(report)
+
+    Log.d("ReportSubmit", "Report saved: $report")
+
+    // TODO: also POST to your backend API here
     // apiService.submitReport(report)
 }

@@ -65,6 +65,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("com.google.maps.android:maps-compose:4.2.0")
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    // Maps Utils: required for HeatmapTileProvider
+    implementation("com.google.maps.android:android-maps-utils:3.8.2")
     ///// LIFECYCLE /////
     val lifecycle_version = "2.7.0" // or latest
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}")
