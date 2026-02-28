@@ -71,6 +71,7 @@ fun navGraphBuilder(navController: NavController, userType: UserType): NavGraph 
         composable("HeatMap") { HeatMap(navController) }
         composable("ReportDetailScreen") { ReportDetailScreen(navController) }
         composable("Plus-Screen") { CameraScreen(navController, onClose = {}) }
+        composable("Location-Screen") { LocationScreen(navController) }
 
         // 🐾 ADOPTION FLOW (Conditional)
         composable("Adoption-Screen") {
