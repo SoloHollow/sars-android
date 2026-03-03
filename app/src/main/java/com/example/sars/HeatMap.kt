@@ -12,8 +12,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavController
-import com.example.sars.sampledata.AppBottomBar
-import com.example.sars.sampledata.AppTopBar
 import com.google.maps.android.compose.*
 import com.google.maps.android.heatmaps.HeatmapTileProvider
 import com.google.maps.android.heatmaps.WeightedLatLng
@@ -35,7 +33,6 @@ object ReportStore {
 @Composable
 fun HeatMap(navController: NavController) {
     var permissionGranted by remember { mutableStateOf(false) }
-    val selectedIndex = remember { mutableIntStateOf(0) }
     var showCamera by remember { mutableStateOf(false) }
 
     if (!permissionGranted) {
@@ -52,19 +49,13 @@ fun HeatMap(navController: NavController) {
         CameraScreen(navController, onClose = { showCamera = false })
     } else {
         Scaffold(
-            topBar = { AppTopBar() },
-            bottomBar = {
-                AppBottomBar(
-                    navController,
-                    selectedIndex,
-                    onAddClick = { showCamera = true })
-            },
             floatingActionButton = {
                 FloatingActionButtonWithNav(navController)
             }
         ) { innerPadding ->
             Column(
                 modifier = Modifier
+                    .padding(innerPadding)
                     .padding(16.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),

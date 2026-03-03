@@ -22,35 +22,21 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.sars.sampledata.AppBottomBar
 import com.example.sars.sampledata.PetRepository
 import kotlinx.coroutines.launch
 
 @Composable
 fun AdoptionScreen(navController: NavController) {
 
-    val selectedIndex = remember { mutableIntStateOf(1) }
     var showCamera by remember { mutableStateOf(false) }
 
     val pets = PetRepository.pets
     var index by remember { mutableStateOf(0) }
 
-    Scaffold(
-        bottomBar = {
-            AppBottomBar(
-                navController,
-                selectedIndex,
-                onAddClick = { showCamera = true }
-            )
-        }
-    ) { padding ->
-
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
 
             if (index >= pets.size) {
                 Text("No more pets 🐾", fontSize = 22.sp)
@@ -136,6 +122,5 @@ fun AdoptionScreen(navController: NavController) {
                     } // Closes the inner Column
                 } // Closes the Card's Column
             } // Closes the Card
-        } // Closes the Box <--- MISSING
-    } // Closes the Scaffold content block <--- MISSING
-} // Closes the AdoptionScreen function <--- MISSING
+        } // Closes the Box
+} // Closes the AdoptionScreen function
