@@ -14,7 +14,7 @@ object DummyPetDataSource {
             color = "Brown",
             breed = "Akita",
             location = "Toronto CA",
-            image = R.drawable.black_dog,
+            image = R.drawable.bella,
             description = "Hachiko, a loyal Akita, is famous for his unwavering devotion to his owner. He would wait for his owner at the train station every day after work, even after his owner passed away."
         ),
         Pet(
@@ -25,7 +25,7 @@ object DummyPetDataSource {
             color = "Gold",
             breed = "Great Dane",
             location = "Toronto CA",
-            image = R.drawable.white_dog,
+            image = R.drawable.max,
             description = "Skooby Doo, a playful and curious Great Dane, loves solving mysteries with his friends and enjoys a good Scooby Snack!"
         ),
         Pet(
@@ -36,7 +36,7 @@ object DummyPetDataSource {
             color = "White",
             breed = "Chihuahua",
             location = "Toronto CA",
-            image = R.drawable.red_dog,
+            image = R.drawable.charlie,
             description = "Miss Agnes, a sassy Chihuahua, loves to play dress-up and has a wardrobe full of tiny outfits. She's also a champion lap warmer!"
         ),
         Pet(
@@ -47,7 +47,7 @@ object DummyPetDataSource {
             color = "Black",
             breed = "Chihuahua",
             location = "Toronto CA",
-            image = R.drawable.yellow_dog,
+            image = R.drawable.rocky,
             description = "Cyrus, a curious Chihuahua puppy, loves exploring every nook and cranny of the house. He's full of energy and always up for an adventure!"
         ),
         Pet(
@@ -58,7 +58,7 @@ object DummyPetDataSource {
             color = "Chocolate",
             breed = "Mixed",
             location = "Toronto CA",
-            image = R.drawable.white_dog,
+            image = R.drawable.max,
             description = "Shelby, a playful and cuddly mixed breed puppy, is full of love and enjoys playing fetch in the park. She's always wagging her tail and eager to meet new friends!"
         ),
     )
