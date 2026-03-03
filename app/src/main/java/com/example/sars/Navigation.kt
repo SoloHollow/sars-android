@@ -100,8 +100,7 @@ fun navGraphBuilder(navController: NavController, userType: UserType): NavGraph 
         composable("HeatMap") { HeatMap(navController) }
         composable("ReportDetailScreen") { ReportDetailScreen(navController) }
         composable("Plus-Screen") { CameraScreen(navController, onClose = {}) }
-        composable("Directory-Screen") { DirectoryScreen(navController) }
-        composable("Profile-Screen") { ProfileScreen(navController) }
+        composable("Location-Screen") { LocationScreen(navController) }
 
         // 🐾 ADOPTION FLOW (Conditional)
         composable("Adoption-Screen") {
