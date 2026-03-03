@@ -24,6 +24,15 @@ interface ApiService {
     @GET("api/directory/")
     suspend fun getDirectoryEntries(): DirectoryListResponse
 
+    @POST("api/reports/")
+    suspend fun createReport(@Body report: AnimalReport): AnimalReport
+
+    @GET("api/reports/nearby")
+    suspend fun getNearbyReports(): List<AnimalReport>
+
+    @GET("api/reports/heatmap")
+    suspend fun getHeatmapData(): List<AnimalReport>
+
     companion object {
         private const val BASE_URL = "https://pawnder-backend.vercel.app/"
 

@@ -1,20 +1,33 @@
 package com.example.sars
 
-import java.util.UUID
+import com.google.gson.annotations.SerializedName
 
 data class AnimalReport(
-    val id: UUID? = null,
-    val reportedBy: UUID,
+    @SerializedName("id")
+    val id: String? = null,
+    @SerializedName("reportedBy")
+    val reportedBy: String? = null,
+    @SerializedName("latitude")
     val latitude: Double,
+    @SerializedName("longitude")
     val longitude: Double,
+    @SerializedName("city")
     val city: String?,
+    @SerializedName("state")
     val state: String?,
+    @SerializedName("animalType")
     val animalType: AnimalType,
+    @SerializedName("isPack")
     val isPack: Boolean,
+    @SerializedName("countEstimate")
     val countEstimate: Int,
+    @SerializedName("healthStatus")
     val healthStatus: HealthStatus,
+    @SerializedName("extraInfo")
     val extraInfo: String?,
+    @SerializedName("status")
     val status: ReportStatus = ReportStatus.OPEN,
+    @SerializedName("createdAt")
     val createdAt: String? = null
 )
 

@@ -1,5 +1,6 @@
 package com.example.sars
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.google.maps.android.compose.*
 import com.google.maps.android.heatmaps.HeatmapTileProvider
@@ -32,8 +34,28 @@ object ReportStore {
 
 @Composable
 fun HeatMap(navController: NavController) {
+    val context = LocalContext.current
+    val apiService = remember { ApiService.create(context) }
+    
     var permissionGranted by remember { mutableStateOf(false) }
     var showCamera by remember { mutableStateOf(false) }
+    var heatmapPoints by remember { mutableStateOf<List<AnimalReport>>(emptyList()) }
+
+    LaunchedEffect(Unit) {
+        try {
+            // Fetch reports for the table
+            val nearbyReports = apiService.getNearbyReports()
+            ReportStore.reports.apply {
+                clear()
+                addAll(nearbyReports)
+            }
+            
+            // Fetch data for the heatmap overlay
+            heatmapPoints = apiService.getHeatmapData()
+        } catch (e: Exception) {
+            Log.e("HeatMap", "Error fetching reports", e)
+        }
+    }
 
     if (!permissionGranted) {
         RequestCameraPermission {
@@ -132,6 +154,7 @@ fun HeatMap(navController: NavController) {
                 // ── Google Map with Heatmap overlay ──────────────────────────
                 HeatMapView(
                     reports = reports,
+                    heatmapData = heatmapPoints,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
@@ -144,16 +167,17 @@ fun HeatMap(navController: NavController) {
 @Composable
 fun HeatMapView(
     reports: List<AnimalReport>,
+    heatmapData: List<AnimalReport>,
     modifier: Modifier = Modifier
 ) {
     // Default centre: Kollam, Kerala
     val defaultCenter = LatLng(8.8932, 76.6141)
 
-    // Derive centre from reports if available
-    val mapCenter = remember(reports) {
-        if (reports.isNotEmpty()) {
-            val avgLat = reports.map { it.latitude }.average()
-            val avgLng = reports.map { it.longitude }.average()
+    // Derive centre from heatmapData if available
+    val mapCenter = remember(heatmapData) {
+        if (heatmapData.isNotEmpty()) {
+            val avgLat = heatmapData.map { it.latitude }.average()
+            val avgLng = heatmapData.map { it.longitude }.average()
             LatLng(avgLat, avgLng)
         } else defaultCenter
     }
@@ -168,9 +192,9 @@ fun HeatMapView(
     }
 
     // Build weighted points for heatmap
-    val weightedPoints = remember(reports) {
-        if (reports.isNotEmpty()) {
-            reports.map { report ->
+    val weightedPoints = remember(heatmapData) {
+        if (heatmapData.isNotEmpty()) {
+            heatmapData.map { report ->
                 // Use countEstimate as weight so larger packs appear hotter
                 WeightedLatLng(
                     LatLng(report.latitude, report.longitude),

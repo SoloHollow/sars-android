@@ -60,8 +60,11 @@ fun ReportDetailScreen(
     var state by remember { mutableStateOf<String?>(null) }
 
     var isLoadingLocation by remember { mutableStateOf(false) }
+    var isSubmitting by remember { mutableStateOf(false) }
     var showAnimalTypeMenu by remember { mutableStateOf(false) }
     var showHealthStatusMenu by remember { mutableStateOf(false) }
+
+    val apiService = remember { ApiService.create(context) }
 
     // Location services
     val fusedLocationClient = remember {
@@ -398,26 +401,49 @@ fun ReportDetailScreen(
         Button(
             onClick = {
                 if (latitude != null && longitude != null) {
-                    submitReport(
-                        animalType = animalType,
-                        isPack = isPack,
-                        countEstimate = countEstimate.toIntOrNull() ?: 1,
-                        healthStatus = healthStatus,
-                        latitude = latitude!!,
-                        longitude = longitude!!,
-                        city = city,
-                        state = state,
-                        extraInfo = extraInfo.ifEmpty { null },
-                        contact = contact
-                    )
+                    isSubmitting = true
+                    scope.launch {
+                        try {
+                            val report = AnimalReport(
+                                latitude = latitude!!,
+                                longitude = longitude!!,
+                                city = city,
+                                state = state,
+                                animalType = animalType,
+                                isPack = isPack,
+                                countEstimate = countEstimate.toIntOrNull() ?: 1,
+                                healthStatus = healthStatus,
+                                extraInfo = extraInfo.ifEmpty { null }
+                            )
+                            
+                            apiService.createReport(report)
+                            
+                            withContext(Dispatchers.Main) {
+                                // Save to local store for immediate UI update if needed
+                                ReportStore.addReport(report)
+                                isSubmitting = false
+                                navController.popBackStack()
+                            }
+                        } catch (e: Exception) {
+                            Log.e("ReportSubmit", "Failed to submit report", e)
+                            withContext(Dispatchers.Main) {
+                                isSubmitting = false
+                                // Could show a toast or snackbar here
+                            }
+                        }
+                    }
                 } else {
                     Log.e("ReportSubmit", "Location not detected")
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = latitude != null && longitude != null
+            enabled = latitude != null && longitude != null && !isSubmitting
         ) {
-            Text("Submit Report")
+            if (isSubmitting) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+            } else {
+                Text("Submit Report")
+            }
         }
     }
 }
@@ -473,36 +499,4 @@ private fun FormField(
     }
 }
 
-private fun submitReport(
-    animalType: AnimalType,
-    isPack: Boolean,
-    countEstimate: Int,
-    healthStatus: HealthStatus,
-    latitude: Double,
-    longitude: Double,
-    city: String?,
-    state: String?,
-    extraInfo: String?,
-    contact: String
-) {
-    val report = AnimalReport(
-        reportedBy = java.util.UUID.randomUUID(), // Replace with real user UUID from auth
-        latitude = latitude,
-        longitude = longitude,
-        city = city,
-        state = state,
-        animalType = animalType,
-        isPack = isPack,
-        countEstimate = countEstimate,
-        healthStatus = healthStatus,
-        extraInfo = extraInfo
-    )
-
-    // Save to shared in-memory store so HeatMap can display it
-    ReportStore.addReport(report)
-
-    Log.d("ReportSubmit", "Report saved: $report")
-
-    // TODO: also POST to your backend API here
-    // apiService.submitReport(report)
-}
+// Removed old submitReport function as it's now handled inside the Composable with ApiService
