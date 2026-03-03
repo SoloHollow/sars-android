@@ -38,11 +38,22 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jetbrainscomponents.R
 
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.launch
+import android.util.Log
+
 @Composable
 fun LoginScreen(navController: NavController) {
     var username by remember { mutableStateOf(TextFieldValue("")) }
     var password by remember { mutableStateOf(TextFieldValue("")) }
-    var showPassword by remember { mutableStateOf(true) }
+    var showPassword by remember { mutableStateOf(false) } // Default to false for privacy
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val apiService = remember { ApiService.create(context) }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
@@ -72,6 +83,15 @@ fun LoginScreen(navController: NavController) {
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(8.dp))
+            
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             OutlinedCard(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -86,10 +106,11 @@ fun LoginScreen(navController: NavController) {
                     OutlinedTextField(
                         value = username,
                         onValueChange = { username = it },
-                        label = { Text("Username", color = MaterialTheme.colorScheme.secondary) },
+                        label = { Text("Email / Username", color = MaterialTheme.colorScheme.secondary) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary)
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -100,11 +121,12 @@ fun LoginScreen(navController: NavController) {
                         visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        enabled = !isLoading,
                         trailingIcon = {
                             val image = if (showPassword)
-                                painterResource(id = R.drawable.ic_visibility) // Replace with visibility on icon
+                                painterResource(id = R.drawable.ic_visibility)
                             else
-                                painterResource(id = R.drawable.ic_visibility_off) // Replace with visibility off icon
+                                painterResource(id = R.drawable.ic_visibility_off)
 
                             val description = if (showPassword) "Hide password" else "Show password"
 
@@ -116,18 +138,42 @@ fun LoginScreen(navController: NavController) {
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
-                        onClick = { navController.navigate("HeatMap")},
-                        modifier = Modifier.fillMaxWidth()
+                        onClick = { 
+                            scope.launch {
+                                isLoading = true
+                                errorMessage = null
+                                try {
+                                    // Sending both to handle backend preference
+                                    val response = apiService.login(LoginRequest(
+                                        email = username.text,
+                                        username = username.text, 
+                                        password = password.text
+                                    ))
+                                    TokenManager.saveToken(context, response.token)
+                                    navController.navigate("HeatMap") {
+                                        popUpTo("Login-Screen") { inclusive = true }
+                                    }
+                                } catch (e: Exception) {
+                                    Log.e("LoginScreen", "Login error", e)
+                                    errorMessage = "Login failed: ${e.message}"
+                                } finally {
+                                    isLoading = false
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoading
                     ) {
                         Text(
-                            text = "LOGIN",
+                            text = if (isLoading) "LOGGING IN..." else "LOGIN",
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
-                        onClick = {navController.navigate("Register-Screen")},
-                        modifier = Modifier.fillMaxWidth()
+                        onClick = { navController.navigate("Register-Screen") },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoading
                     ) {
                         Text(
                             text = "REGISTER",
