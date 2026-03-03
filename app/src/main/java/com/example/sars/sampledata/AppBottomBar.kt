@@ -57,19 +57,33 @@ fun AppBottomBar(navController: NavController,selectedIndex: MutableState<Int>, 
 //        )
         NavigationBarItem(
             selected = selectedIndex.value == 3,
-            onClick = { selectedIndex.value = 3 },
+            onClick = { 
+                selectedIndex.value = 3
+                navController.navigate("Directory-Screen") {
+                    popUpTo("HeatMap") { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             icon = {Icon(
-                painter = painterResource(id = R.drawable.ic_info), // Example icon, replace with your actual paw icon
-                contentDescription = "Profile"
+                painter = painterResource(id = R.drawable.ic_info),
+                contentDescription = "Directory"
             )},
             label = { Text("Info") },
             colors = navItemColors()
         )
         NavigationBarItem(
             selected = selectedIndex.value == 4,
-            onClick = { selectedIndex.value = 4 },
+            onClick = { 
+                selectedIndex.value = 4
+                navController.navigate("Profile-Screen") {
+                    popUpTo("HeatMap") { saveState = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
             icon = {Icon(
-                painter = painterResource(id = R.drawable.ic_acc), // Example icon, replace with your actual paw icon
+                painter = painterResource(id = R.drawable.ic_acc),
                 contentDescription = "Profile"
             )},
             label = { Text("Account") },

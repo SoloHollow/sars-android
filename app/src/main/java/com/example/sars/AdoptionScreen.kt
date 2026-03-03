@@ -21,96 +21,70 @@ import kotlinx.coroutines.launch
 @Composable
 fun AdoptionScreen(navController: NavController) {
 
-    val selectedIndex = remember { mutableIntStateOf(1) }
-    var showCamera by remember { mutableStateOf(false) }
-
     val pets = PetRepository.pets
     var index by remember { mutableStateOf(0) }
 
-    Scaffold(
-        bottomBar = {
-            AppBottomBar(
-                navController,
-                selectedIndex,
-                onAddClick = { showCamera = true }
-            )
+    Box(
+        Modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        // No more pets
+        if (index >= pets.size) {
+            Text("No more pets 🐾", fontSize = 22.sp)
+            return@Box
         }
-    ) { padding ->
 
-        Box(
-            Modifier
-                .fillMaxSize()
-                .padding(padding),
-            contentAlignment = Alignment.Center
-        ) {
+        val pet = pets[index]
+        val offsetX = remember { Animatable(0f) }
+        val scope = rememberCoroutineScope()
 
-            // No more pets
-            if (index >= pets.size) {
-                Text("No more pets 🐾", fontSize = 22.sp)
-                return@Box
-            }
-
-            val pet = pets[index]
-
-            val offsetX = remember { Animatable(0f) }
-            val scope = rememberCoroutineScope()
-
-            Card(
-                modifier = Modifier
-                    .size(320.dp, 420.dp)
-                    .offset { IntOffset(offsetX.value.toInt(), 0) }
-                    // ⭐ rotation effect (optional but nice)
-                    .graphicsLayer {
-                        rotationZ = offsetX.value / 40f
-                    }
-                    .pointerInput(Unit) {
-                        detectDragGestures(
-                            onDrag = { _, drag ->
-                                scope.launch {
-                                    offsetX.snapTo(offsetX.value + drag.x)
-                                }
-                            },
-                            onDragEnd = {
-                                scope.launch {
-                                    if (offsetX.value > 300 || offsetX.value < -300) {
-
-                                        // Swipe away animation
-                                        offsetX.animateTo(
-                                            if (offsetX.value > 0) 1000f else -1000f
-                                        )
-
-                                        index++
-                                        offsetX.snapTo(0f)
-
-                                    } else {
-                                        offsetX.animateTo(0f)
-                                    }
+        Card(
+            modifier = Modifier
+                .size(320.dp, 420.dp)
+                .offset { IntOffset(offsetX.value.toInt(), 0) }
+                .graphicsLayer {
+                    rotationZ = offsetX.value / 40f
+                }
+                .pointerInput(Unit) {
+                    detectDragGestures(
+                        onDrag = { _, drag ->
+                            scope.launch {
+                                offsetX.snapTo(offsetX.value + drag.x)
+                            }
+                        },
+                        onDragEnd = {
+                            scope.launch {
+                                if (offsetX.value > 300 || offsetX.value < -300) {
+                                    offsetX.animateTo(
+                                        if (offsetX.value > 0) 1000f else -1000f
+                                    )
+                                    index++
+                                    offsetX.snapTo(0f)
+                                } else {
+                                    offsetX.animateTo(0f)
                                 }
                             }
-                        )
-                    },
-                shape = RoundedCornerShape(20.dp)
-            ) {
-
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-
-                    Text(pet.name, fontSize = 28.sp)
-                    Text(pet.breed)
-                    Text(pet.age)
-
-                    Button(
-                        onClick = {
-                            navController.navigate(
-                                "Details-Screen/${pet.name}"
-                            )
                         }
-                    ) {
-                        Text("View Details")
+                    )
+                },
+            shape = RoundedCornerShape(20.dp)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(pet.name, fontSize = 28.sp)
+                Text(pet.breed)
+                Text(pet.age)
+
+                Button(
+                    onClick = {
+                        navController.navigate("Details-Screen/${pet.name}")
                     }
+                ) {
+                    Text("View Details")
                 }
             }
         }

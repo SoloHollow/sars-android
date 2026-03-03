@@ -37,22 +37,9 @@ fun HeatMap(navController: NavController) {
     } else if (showCamera) {
         CameraScreen(navController,onClose = { showCamera = false })
     } else {
-        Scaffold(
-            topBar = { AppTopBar() },
-            bottomBar = {
-                AppBottomBar(
-                    navController,
-                    selectedIndex,
-                    onAddClick = { showCamera = true })
-            },
-
-            floatingActionButton = {
-                FloatingActionButtonWithNav(navController)
-            }
-        ) { innerPadding ->
+        Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .padding(innerPadding)
                     .padding(16.dp)
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -77,13 +64,13 @@ fun HeatMap(navController: NavController) {
                 }
 
                 // Table Rows
-                val entries = listOf(
+                val tableEntries = listOf(
                     Triple("Karicode", "23", "10:45 AM"),
                     Triple("Peroor", "15", "11:10 AM"),
                     Triple("Kuttichira", "9", "09:30 AM")
                 )
 
-                entries.forEach { (area, number, time) ->
+                tableEntries.forEach { (area, number, time) ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -123,6 +110,15 @@ fun HeatMap(navController: NavController) {
                         title = "Kuttichira"
                     )
                 }
+            }
+            
+            // FAB manually placed in Box
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                FloatingActionButtonWithNav(navController)
             }
         }
     }

@@ -22,10 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,16 +35,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.jetbrainscomponents.R
-import com.example.jetbrainscomponents.ui.theme.JetbrainsComponentsTheme
-import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(navController: NavController) {
+    var fullName by remember { mutableStateOf(TextFieldValue("")) }
+    var email by remember { mutableStateOf(TextFieldValue("")) }
+    var password by remember { mutableStateOf(TextFieldValue("")) }
+    var confirmPassword by remember { mutableStateOf(TextFieldValue("")) }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val apiService = remember { ApiService.create(context) }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background
     ) {
@@ -70,6 +83,14 @@ fun RegisterScreen(navController: NavController) {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             OutlinedCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -78,21 +99,14 @@ fun RegisterScreen(navController: NavController) {
                         .padding(16.dp)
                         .fillMaxWidth()
                 ) {
-                    var fullName by remember { mutableStateOf(TextFieldValue("")) }
-                    var email by remember { mutableStateOf(TextFieldValue("")) }
-                    var password by remember { mutableStateOf(TextFieldValue("")) }
-                    var confirmPassword by remember { mutableStateOf(TextFieldValue("")) }
-                    var passwordVisible by remember { mutableStateOf(false) }
-                    var confirmPasswordVisible by remember { mutableStateOf(false) }
-
                     OutlinedTextField(
                         value = fullName,
                         onValueChange = { fullName = it },
                         label = { Text("Full Name") },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary)
-
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -102,8 +116,8 @@ fun RegisterScreen(navController: NavController) {
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth(),
-                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary)
-
+                        textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        enabled = !isLoading
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
@@ -113,6 +127,7 @@ fun RegisterScreen(navController: NavController) {
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        enabled = !isLoading,
                         trailingIcon = {
                             val image = if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -129,8 +144,9 @@ fun RegisterScreen(navController: NavController) {
                         visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         textStyle = TextStyle(color = MaterialTheme.colorScheme.primary),
+                        enabled = !isLoading,
                         trailingIcon = {
-                            val image = if (passwordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
+                            val image = if (confirmPasswordVisible) R.drawable.ic_visibility else R.drawable.ic_visibility_off
                             IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
                                 Icon(painter = painterResource(id = image), "toggle confirm password visibility")
                             }
@@ -138,11 +154,47 @@ fun RegisterScreen(navController: NavController) {
                         modifier = Modifier.fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = { navController.navigate("Login-Screen") }, modifier = Modifier.fillMaxWidth()) { Text("Register") }
+                    Button(
+                        onClick = { 
+                            if (password.text != confirmPassword.text) {
+                                errorMessage = "Passwords do not match"
+                                return@Button
+                            }
+                            scope.launch {
+                                isLoading = true
+                                errorMessage = null
+                                try {
+                                    apiService.register(RegisterRequest(
+                                        username = email.text.substringBefore("@"),
+                                        email = email.text,
+                                        password = password.text,
+                                        fullName = fullName.text
+                                    ))
+                                    navController.navigate("Login-Screen") {
+                                        popUpTo("Register-Screen") { inclusive = true }
+                                    }
+                                } catch (e: Exception) {
+                                    errorMessage = "Registration failed: ${e.message}"
+                                } finally {
+                                    isLoading = false
+                                }
+                            }
+                        }, 
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoading
+                    ) { 
+                        Text(if (isLoading) "REGISTERING..." else "Register") 
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { navController.navigate("Login-Screen") },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = !isLoading
+                    ) {
+                        Text("Back to Login")
+                    }
                 }
             }
         }
     }
 }
-
-

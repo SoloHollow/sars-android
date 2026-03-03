@@ -7,6 +7,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,37 +21,65 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.createGraph
+import androidx.compose.runtime.mutableIntStateOf
+import com.example.sars.sampledata.AppBottomBar
+import androidx.navigation.compose.currentBackStackEntryAsState
 
 // Simple enum to distinguish user types
 enum class UserType {
     CITIZEN, ORGANIZATION
 }
 
+
+
+
 @Composable
 fun Navigation() {
     val navController = rememberNavController()
-
-    // State to simulate user type (Citizen by default)
     var userType by remember { mutableStateOf(UserType.CITIZEN) }
+    
+    // Reactive route tracking
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-    navController.addOnDestinationChangedListener { _, destination, _ ->
-        Log.i("NavController", "Destination: ${destination.route}")
+    val selectedIndex = remember { mutableIntStateOf(0) }
+    
+    // Sync selected index with route
+    LaunchedEffect(currentRoute) {
+        when (currentRoute) {
+            "HeatMap" -> selectedIndex.intValue = 0
+            "Adoption-Screen" -> selectedIndex.intValue = 1
+            "Directory-Screen" -> selectedIndex.intValue = 3
+            "Profile-Screen" -> selectedIndex.intValue = 4
+        }
     }
 
     Scaffold(
         topBar = {
-            // This is the "Simple Switch" for testing
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(text = if (userType == UserType.CITIZEN) "Citizen View" else "Org View")
-                Switch(
-                    checked = userType == UserType.ORGANIZATION,
-                    onCheckedChange = { isChecked ->
-                        userType = if (isChecked) UserType.ORGANIZATION else UserType.CITIZEN
-                    },
-                    modifier = Modifier.padding(start = 8.dp)
+            // Show top bar only if NOT on login/register
+            if (currentRoute != "Login-Screen" && currentRoute != "Register-Screen") {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = if (userType == UserType.CITIZEN) "Citizen View" else "Org View")
+                    Switch(
+                        checked = userType == UserType.ORGANIZATION,
+                        onCheckedChange = { isChecked ->
+                            userType = if (isChecked) UserType.ORGANIZATION else UserType.CITIZEN
+                        },
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            // Only show bottom bar if NOT on login or register screen
+            if (currentRoute != null && currentRoute != "Login-Screen" && currentRoute != "Register-Screen") {
+                AppBottomBar(
+                    navController = navController,
+                    selectedIndex = selectedIndex,
+                    onAddClick = { navController.navigate("Plus-Screen") }
                 )
             }
         }
@@ -71,6 +100,8 @@ fun navGraphBuilder(navController: NavController, userType: UserType): NavGraph 
         composable("HeatMap") { HeatMap(navController) }
         composable("ReportDetailScreen") { ReportDetailScreen(navController) }
         composable("Plus-Screen") { CameraScreen(navController, onClose = {}) }
+        composable("Directory-Screen") { DirectoryScreen(navController) }
+        composable("Profile-Screen") { ProfileScreen(navController) }
 
         // 🐾 ADOPTION FLOW (Conditional)
         composable("Adoption-Screen") {
