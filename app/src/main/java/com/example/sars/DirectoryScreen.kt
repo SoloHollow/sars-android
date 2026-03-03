@@ -1,5 +1,6 @@
 package com.example.sars
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,6 +41,7 @@ fun DirectoryScreen(navController: NavController) {
             val response = apiService.getDirectoryEntries()
             entries = response.entries ?: emptyList()
         } catch (e: Exception) {
+            Log.e("DirectoryScreen", "Directory load error", e)
             errorMessage = "Failed to load directory: ${e.message}"
         } finally {
             isLoading = false

@@ -12,13 +12,13 @@ import retrofit2.http.POST
 
 interface ApiService {
 
-    @POST("api/auth/login/")
+    @POST("api/auth/login")
     suspend fun login(@Body request: LoginRequest): AuthResponse
 
-    @POST("api/auth/register/")
+    @POST("api/auth/register")
     suspend fun register(@Body request: RegisterRequest): AuthResponse
 
-    @GET("api/auth/profile/")
+    @GET("api/auth/profile")
     suspend fun getProfile(): ProfileResponse
 
     @GET("api/directory/")

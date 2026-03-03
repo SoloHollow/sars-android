@@ -1,5 +1,6 @@
 package com.example.sars
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -165,15 +166,15 @@ fun RegisterScreen(navController: NavController) {
                                 errorMessage = null
                                 try {
                                     apiService.register(RegisterRequest(
-                                        username = email.text.substringBefore("@"),
+                                        name = fullName.text,
                                         email = email.text,
-                                        password = password.text,
-                                        fullName = fullName.text
+                                        password = password.text
                                     ))
                                     navController.navigate("Login-Screen") {
                                         popUpTo("Register-Screen") { inclusive = true }
                                     }
                                 } catch (e: Exception) {
+                                    Log.e("RegisterScreen", "Registration error", e)
                                     errorMessage = "Registration failed: ${e.message}"
                                 } finally {
                                     isLoading = false

@@ -12,7 +12,7 @@ data class User(
     val username: String? = null,
     val email: String? = null,
     val role: String? = null,
-    @SerializedName("fullName", alternate = ["full_name", "name"])
+    @SerializedName("name", alternate = ["fullName", "full_name", "fullname"])
     val fullName: String? = null
 )
 
@@ -23,12 +23,9 @@ data class LoginRequest(
 )
 
 data class RegisterRequest(
-    val username: String,
+    val name: String,
     val email: String,
-    val password: String,
-    @SerializedName("fullName", alternate = ["full_name", "name", "fullname"])
-    val fullName: String? = null,
-    val role: String? = "CITIZEN"
+    val password: String
 )
 
 data class ProfileResponse(

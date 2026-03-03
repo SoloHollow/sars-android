@@ -41,6 +41,7 @@ import com.example.jetbrainscomponents.R
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
+import android.util.Log
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -153,6 +154,7 @@ fun LoginScreen(navController: NavController) {
                                         popUpTo("Login-Screen") { inclusive = true }
                                     }
                                 } catch (e: Exception) {
+                                    Log.e("LoginScreen", "Login error", e)
                                     errorMessage = "Login failed: ${e.message}"
                                 } finally {
                                     isLoading = false

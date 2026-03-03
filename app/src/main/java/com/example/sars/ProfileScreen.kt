@@ -1,5 +1,6 @@
 package com.example.sars
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,6 +52,7 @@ fun ProfileScreen(navController: NavController) {
             val response = apiService.getProfile()
             userProfile = response.user
         } catch (e: Exception) {
+            Log.e("ProfileScreen", "Profile load error", e)
             val token = TokenManager.getToken(context)
             errorMessage = "Failed to load profile: ${e.message}${if (token == null) " (Token missing)" else " (Token present)"}"
         } finally {
