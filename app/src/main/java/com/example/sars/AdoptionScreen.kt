@@ -57,9 +57,9 @@ fun AdoptionScreen(navController: NavController) {
                 return@Box
             }
 
-            val pet = pets[index]
-            val offsetX = remember { Animatable(0f) }
-            val scope = rememberCoroutineScope()
+        val pet = pets[index]
+        val offsetX = remember { Animatable(0f) }
+        val scope = rememberCoroutineScope()
 
             Card(
                 modifier = Modifier
@@ -127,15 +127,15 @@ fun AdoptionScreen(navController: NavController) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
-                            onClick = { navController.navigate("Details-Screen/${pet.name}") },
-                            modifier = Modifier.fillMaxWidth(),
-                            shape = RoundedCornerShape(12.dp)
+                            onClick = {
+                                navController.navigate("Details-Screen/${pet.name}")
+                            }
                         ) {
-                            Text("Adopt ${pet.name}")
+                            Text("View Details")
                         }
-                    }
-                }
-            }
-        }
-    }
-}
+                    } // Closes the inner Column
+                } // Closes the Card's Column
+            } // Closes the Card
+        } // Closes the Box <--- MISSING
+    } // Closes the Scaffold content block <--- MISSING
+} // Closes the AdoptionScreen function <--- MISSING
